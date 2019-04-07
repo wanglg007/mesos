@@ -1,0 +1,51 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto2";
+
+import "csi.proto";
+
+import "mesos/mesos.proto";
+
+package mesos.resource_provider;
+
+option java_package = "org.apache.mesos.resource_provider";
+option java_outer_classname = "Protos";
+
+
+message ResourceProviderState {
+  // The list of operations that have unacknowledged terminal statuses.
+  repeated Operation operations = 1;
+
+  // The total resources provided by this resource provider.
+  repeated Resource resources = 2;
+
+  // Storage resource provider related states.
+  message Storage {
+    // Describes a manifest of CSI properties associated with a profile.
+    // See DiskProfileAdaptor::ProfileInfo.
+    message ProfileInfo {
+      required .csi.v0.VolumeCapability capability = 1;
+      map<string, string> parameters = 2;
+    }
+
+    // The set of profiles associated with any storage pool in the total
+    // resources.
+    map<string, ProfileInfo> profiles = 1;
+  }
+
+  optional Storage storage = 3;
+}
